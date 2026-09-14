@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Clases de Pilates</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="no-imprimir">
+        <h1>Planificador de Clases de Pilates</h1>
+    </header>
+
+    <main class="container">
+
+        <!-- ========================================== -->
+        <!-- SECCIÓN 1: BIBLIOTECA Y SELECCIÓN DE EJERCICIOS -->
+        <!-- ========================================== -->
+        <section class="panel panel-superior no-imprimir">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                <h2 style="margin: 0;">Biblioteca de Ejercicios</h2>
+                
+                <div style="display: flex; gap: 10px;">
+                    <!-- BOTÓN HACIA EL BANCO COMPLETO DE EJERCICIOS -->
+                    <a href="biblioteca.html" class="btn-primary" style="text-decoration: none; padding: 8px 16px; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px;">
+                        <span>📚</span> Banco de Ejercicios
+                    </a>
+                    <!-- BOTÓN HACIA EL CREADOR DE EJERCICIOS -->
+                    <a href="creador.html" class="btn-primary" style="text-decoration: none; padding: 8px 16px; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px;">
+                        <span>⚙️</span> Creador
+                    </a>
+                </div>
+            </div>
+            
+            <div class="filters" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 15px;">
+                <!-- BUSCADOR POR NOMBRE -->
+                <input type="text" id="inputBuscar" placeholder="Buscar ejercicio..." onkeyup="filtrarEjercicios()" style="padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; flex: 1; min-width: 150px;">
+
+                <!-- FILTRO DE APARATO -->
+                <label for="filterAparato"><strong>Aparato:</strong></label>
+                <select id="filterAparato" onchange="filtrarEjercicios()">
+                    <option value="todos">Todos</option>
+                    <option value="Reformer">Reformer</option>
+                    <option value="Mat">Mat</option>
+                    <option value="Chair">Chair</option>
+                    <option value="Cadillac">Cadillac</option>
+                    <option value="Barrel">Barrel</option>
+                </select>
+
+                <!-- FILTRO DE NIVEL -->
+                <label for="filterNivel"><strong>Nivel:</strong></label>
+                <select id="filterNivel" onchange="filtrarEjercicios()">
+                    <option value="todos">Todos</option>
+                    <option value="Inicial">Inicial</option>
+                    <option value="Intermedio">Intermedio</option>
+                    <option value="Avanzado">Avanzado</option>
+                </select>
+
+                <!-- FILTRO DE BLOQUE -->
+                <label for="filterBloque"><strong>Bloque:</strong></label>
+                <select id="filterBloque" onchange="filtrarEjercicios()">
+                    <option value="todos">Todos</option>
+                    <option value="Footwork">Footwork</option>
+                    <option value="Miembro Inferior">Miembro Inf.</option>
+                    <option value="Tronco">Tronco</option>
+                    <option value="Miembro Superior">Miembro Sup.</option>
+                </select>
+            </div>
+
+            <!-- CONTENEDOR DONDE SE CARGAN LAS TARJETAS DE EJERCICIOS -->
+            <div id="exerciseGrid" class="exercise-grid">
+                <!-- Se inyecta automáticamente con app.js -->
+            </div>
+            
+        </section>
+
+        <!-- LÍNEA SEPARADORA -->
+        <hr class="separador-horizontal no-imprimir">
+
+        <!-- ========================================== -->
+        <!-- SECCIÓN 2: PLANIFICACIÓN DE CLASE -->
+        <!-- ========================================== -->
+        <section class="panel panel-inferior" id="seccionClaseImprimir">
+            <h2>Planificación de Clase</h2>
+            
+            <!-- CUADRO 1: ENCABEZADO DE LA CLASE -->
+            <div class="cuadro-clase cuadro-encabezado">
+                <div class="campo-encabezado">
+                    <label for="inputTurno">Turno:</label>
+                    <input type="text" id="inputTurno" placeholder="Ej: Mañana / 09:00 hs" oninput="guardarEncabezado()">
+                </div>
+                <div class="campo-encabezado">
+                    <label for="inputNroClase">N° Clase:</label>
+                    <input type="text" id="inputNroClase" placeholder="Ej: 12" oninput="guardarEncabezado()">
+                </div>
+                <div class="campo-encabezado">
+                    <label for="inputDia">Día:</label>
+                    <input type="date" id="inputDia" onchange="guardarEncabezado()">
+                </div>
+            </div>
+
+            <!-- CUADRO 2: DETALLE DE EJERCICIOS Y BLOQUES -->
+            <div class="cuadro-clase">
+                <h3 class="titulo-cuadro">Plan de Ejercicios por Bloques</h3>
+                <div id="bloquesContainer">
+                    <!-- Se inyectan dinámicamente mediante app.js -->
+                </div>
+            </div>
+
+            <!-- CUADRO 3: OBSERVACIONES -->
+            <div class="cuadro-clase cuadro-observaciones">
+                <h3 class="titulo-cuadro">Observaciones</h3>
+                <div class="espacio-lineas-impresion">
+                    <div class="linea-guia"></div>
+                    <div class="linea-guia"></div>
+                    <div class="linea-guia"></div>
+                </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="no-imprimir" style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn-primary" style="flex: 2; background: #27ae60; padding: 12px; font-size: 1rem;" onclick="window.print()">Descargar / Imprimir Clase</button>
+                <button style="flex: 1; background: #e0e0e0; border: none; font-weight: bold;" onclick="limpiarPlanificacion()">Vaciar Plan</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal para mostrar Variantes -->
+    <div id="modalVariantes" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+        <div style="background: white; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; padding: 20px; border-radius: 8px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <button type="button" onclick="cerrarModalVariantes()" style="position: absolute; top: 10px; right: 15px; border: none; background: transparent; font-size: 1.5rem; cursor: pointer; color: #888;">&times;</button>
+            <div id="contenidoVariantesModal"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs (Compatibilidad Web v10) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAkY1CkU1hdzkrtMUyGhZA91enCaC_mlkg",
+            authDomain: "planificador-de-clases-pi.firebaseapp.com",
+            databaseURL: "https://planificador-de-clases-pi-default-rtdb.firebaseio.com",
+            projectId: "planificador-de-clases-pi",
+            storageBucket: "planificador-de-clases-pi.firebasestorage.app",
+            messagingSenderId: "997712158194",
+            appId: "1:997712158194:web:af9403ddb6db63806b1f6b",
+            measurementId: "G-QYJND0993V"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+
+    <!-- Script principal de la aplicación -->
+    <script src="app.js"></script>
+</body>
+</html>

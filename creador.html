@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creador de Ejercicios - Pilates</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container-creador {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .drop-zone {
+            border: 2px dashed #ccc;
+            border-radius: 6px;
+            padding: 25px;
+            text-align: center;
+            background: #fafafa;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .grid-2-col {
+                grid-template-columns: 1fr;
+            }
+        }
+        .bloque-item {
+            display: flex;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+        .delete-btn {
+            background: #ff7675;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            line-height: 1;
+        }
+        .delete-btn:hover {
+            background: #d63031;
+        }
+        .badge {
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="no-imprimir">
+        <h1>Creador de Ejercicios</h1>
+    </header>
+
+    <main class="container-creador">
+        <div style="margin-bottom: 20px;">
+            <a href="biblioteca.html" class="btn-primary" style="text-decoration: none; padding: 8px 16px; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; background: #6c5ce7; color: white; border-radius: 4px;">
+                <span>⬅️</span> Ir a la Biblioteca
+            </a>
+        </div>
+
+        <form id="formEjercicio">
+            <div class="form-group">
+                <label for="nuevoNombre">Nombre del Ejercicio:</label>
+                <input type="text" id="nuevoNombre" required placeholder="Ej: Footwork">
+            </div>
+
+            <div class="grid-2-col">
+                <div class="form-group">
+                    <label for="nuevoAparato">Aparato:</label>
+                    <select id="nuevoAparato" required>
+                        <option value="Reformer">Reformer</option>
+                        <option value="Mat">Mat</option>
+                        <option value="Chair">Wunda Chair</option>
+                        <option value="Cadillac">Cadillac</option>
+                        <option value="Barrel">Barrel</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="nuevoNivel">Nivel:</label>
+                    <select id="nuevoNivel" required>
+                        <option value="Inicial">Inicial</option>
+                        <option value="Intermedio">Intermedio</option>
+                        <option value="Avanzado">Avanzado</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-2-col">
+                <div class="form-group">
+                    <label for="nuevoResortes">Resortes / Carga:</label>
+                    <input type="text" id="nuevoResortes" placeholder="Ej: 2 Rojos, 1 Azul">
+                </div>
+
+                <div class="form-group">
+                    <label for="nuevoBloque">Bloque Sugerido:</label>
+                    <select id="nuevoBloque" required>
+                        <option value="Footwork">Footwork</option>
+                        <option value="Miembro Inferior">Miembro Inferior</option>
+                        <option value="Tronco">Tronco</option>
+                        <option value="Miembro Superior">Miembro Superior</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="nuevaDescripcion">Descripción / Objetivos:</label>
+                <textarea id="nuevaDescripcion" rows="3" placeholder="Detalles de ejecución, respiración o precauciones..."></textarea>
+            </div>
+
+            <!-- DRAG AND DROP / SUBIR IMAGEN -->
+            <div class="form-group">
+                <label>Imagen del Ejercicio (Opcional):</label>
+                <div id="dropZone" class="drop-zone">
+                    <span id="dropZoneText">📷 Arrastra tu imagen aquí o <span style="color: #007bff; text-decoration: underline;">haz clic para seleccionar</span></span>
+                    <input type="file" id="nuevaImagenFile" accept="image/*" style="display: none;">
+                </div>
+                <!-- Campo para Capturar o Seleccionar Imagen celular -->
+<div class="form-group" style="margin-bottom: 15px;">
+    <label for="inputImagenFile"><strong>Foto del Ejercicio:</strong></label>
+    
+    <!-- Este input activa la cámara directamente en celulares -->
+    <input type="file" id="inputImagenFile" accept="image/*" capture="environment" onchange="previsualizarFoto(event)" style="display: block; margin-top: 5px; width: 100%;">
+    
+    <small style="color: #666; display: block; margin-top: 4px;">Puedes tomar una foto con la cámara o elegir una de la galería.</small>
+
+    <!-- Previsualización de la foto capturada -->
+    <div id="contenedorPreview" style="margin-top: 10px; display: none; text-align: center;">
+        <img id="imgPreview" src="" alt="Vista previa" style="max-width: 100%; max-height: 200px; border-radius: 6px; border: 1px solid #ccc; object-fit: cover;">
+    </div>
+</div>
+            </div>
+
+            <!-- ================================================================= -->
+            <!-- 📍 NUEVA SECCIÓN: VARIANTES DEL EJERCICIO                       -->
+            <!-- ================================================================= -->
+            <hr style="margin: 25px 0 15px 0; border: 0; border-top: 1px dashed #ccc;">
+            
+            <div class="seccion-variantes" style="margin-bottom: 20px;">
+                <h3 style="margin-top: 0; color: #2c3e50; font-size: 1.1rem;">✨ Variantes del Ejercicio (Opcional)</h3>
+                
+                <!-- Contenedor donde JS insertará los bloques de variantes -->
+                <div id="contenedor-variantes"></div>
+
+                <button type="button" id="btnAgregarVariante" style="background: #0984e3; color: white; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; margin-top: 5px;">
+                    + Agregar Variante
+                </button>
+            </div>
+            <!-- ================================================================= -->
+
+            <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; font-size: 1rem; background: #2ed573; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px;">
+                💾 Guardar Ejercicio en Firebase
+            </button>
+        </form>
+
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+
+        <h3>Ejercicios Creados Recientemente</h3>
+        <!-- Lista sincronizada en tiempo real mediante creador.js -->
+        <div id="listaPersonalizados" style="margin-top: 15px;">
+            <p style="color: #888; font-style: italic;">Cargando lista de ejercicios...</p>
+        </div>
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAkY1CkU1hdzkrtMUyGhZA91enCaC_mlkg",
+            authDomain: "planificador-de-clases-pi.firebaseapp.com",
+            databaseURL: "https://planificador-de-clases-pi-default-rtdb.firebaseio.com",
+            projectId: "planificador-de-clases-pi",
+            storageBucket: "planificador-de-clases-pi.firebasestorage.app",
+            messagingSenderId: "997712158194",
+            appId: "1:997712158194:web:af9403ddb6db63806b1f6b",
+            measurementId: "G-QYJND0993V"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+    </script>
+
+    <script src="creador.js"></script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+/* ==========================================
+   1. VARIABLES Y CONFIGURACIÓN GENERAL
+   ========================================== */
+:root {
+    --primary: #8e7dbe;
+    --primary-dark: #5a3d99;
+    --primary-light: #e2d9f3;
+    --secondary: #f4f1ea;
+    --dark: #333333;
+    --light: #ffffff;
+    --accent: #d4a373;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--secondary);
+    color: var(--dark);
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.panel {
+    background: var(--light);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    width: 100%;
+    display: block; /* Asegura visualización */
+}
+
+.separador-horizontal {
+    border: 0;
+    height: 1px;
+    background: var(--primary-light);
+    margin: 15px 0;
+}
+
+/* ==========================================
+   2. CONTROLES Y FORMULARIO
+   ========================================== */
+select, button, input {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: var(--light);
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button.btn-primary {
+    background: var(--primary);
+    color: white;
+    border: none;
+    font-weight: bold;
+    transition: background 0.2s ease;
+}
+
+button.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* ==========================================
+   3. BIBLIOTECA DE EJERCICIOS (CATÁLOGO)
+   ========================================== */
+/* Solución del problema de visibilidad */
+#exerciseGrid,
+.exercise-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    max-height: 550px; /* Altura generosa con scroll interno */
+    overflow-y: auto;
+    padding: 5px;
+    min-height: 120px; /* Previene colapso si tarda en cargar */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.exercise-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.exercise-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.badge {
+    font-size: 0.72rem;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    padding: 2px 8px;
+    border-radius: 4px;
+    width: fit-content;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.select-bloque-dropdown {
+    font-size: 0.8rem;
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid var(--primary);
+    background: white;
+    color: var(--primary-dark);
+    font-weight: bold;
+    width: 100%;
+    margin-top: 8px;
+}
+
+/* ==========================================
+   4. PLAN DE CLASE Y BLOQUES
+   ========================================== */
+.cuadro-clase {
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+}
+
+.cuadro-encabezado {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    background-color: #f8f6fc;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.campo-encabezado {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.campo-encabezado label {
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: var(--primary-dark);
+}
+
+.campo-encabezado input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.titulo-cuadro {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+    border-bottom: 1px solid var(--primary-light);
+    padding-bottom: 6px;
+}
+
+.bloque-section {
+    margin-bottom: 18px;
+    border: 1px solid var(--primary-light);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.bloque-header {
+    background: #f1ecfc;
+    padding: 10px 15px;
+    font-weight: bold;
+    color: var(--primary-dark);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.bloque-body, #bloquesContainer {
+    padding: 12px;
+    background: #fff;
+}
+
+/* Fila de ejercicio en el Plan */
+.ejercicio-detalle-grid {
+    display: grid;
+    grid-template-columns: auto 1.2fr 2fr 1.2fr 1.2fr 35px;
+    gap: 12px;
+    align-items: start;
+    padding: 12px;
+    border: 1px solid #e9e4f3;
+    background: #faf8fe;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+/* ==========================================
+   5. CONTENEDORES DE IMAGEN
+   ========================================== */
+.img-resizable-container {
+    width: 80px;
+    height: 80px;
+    min-width: 50px;
+    min-height: 50px;
+    max-width: 250px;
+    max-height: 250px;
+    resize: both;
+    overflow: hidden;
+    border: 1px dashed var(--primary);
+    border-radius: 6px;
+    padding: 2px;
+    background: #fff;
+}
+
+.img-resizable-container img, 
+.img-estatica-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+}
+
+.placeholder-img {
+    width: 100%;
+    height: 100%;
+    background: #ece6f6;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    color: var(--primary);
+    text-align: center;
+    border: 1px dashed var(--primary);
+}
+
+/* ==========================================
+   6. EDICIÓN Y BOTONES DE ACCIÓN
+   ========================================== */
+.input-editable-clase {
+    width: 100%;
+    border: 1px solid #d4c5ed;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 0.82rem;
+    font-family: inherit;
+    resize: vertical;
+    background-color: #ffffff;
+    color: var(--dark);
+}
+
+.input-editable-clase:focus {
+    outline: none;
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 4px rgba(142, 125, 190, 0.4);
+}
+
+.acciones-ejercicio {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-orden {
+    background: #f0ebf8;
+    color: var(--primary-dark);
+    border: 1px solid var(--primary-light);
+    border-radius: 4px;
+    width: 26px;
+    height: 22px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-orden:hover {
+    background: var(--primary-light);
+}
+
+.delete-btn {
+    color: #d9534f;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.3rem;
+    line-height: 1;
+    padding: 0;
+}
+
+/* ==========================================
+   7. VISTA ESTÁTICA & IMPRESIÓN
+   ========================================== */
+@media print {
+    body {
+        background: #fff;
+        padding: 0;
+    }
+
+    .no-imprimir,
+    .panel-superior,
+    .separador-horizontal,
+    button,
+    .delete-btn,
+    .btn-imprimir {
+        display: none !important;
+    }
+
+    .container {
+        display: block;
+        padding: 0;
+        margin: 0;
+        max-width: 100%;
+    }
+
+    #seccionClaseImprimir {
+        box-shadow: none;
+        padding: 0;
+        border: none;
+    }
+
+    .cuadro-clase {
+        border: 1px solid #000 !important;
+        page-break-inside: avoid;
+    }
+
+    .input-editable-clase {
+        border: none;
+        resize: none;
+        padding: 0;
+        background: transparent;
+        font-size: 0.85rem;
+    }
+}
+/* ==========================================
+   ENCUADRE Y AJUSTE DE IMÁGENES EN EL PLAN DE CLASE
+   ========================================== */
+
+/* Contenedor fijo para la imagen dentro de cada fila */
+.ejercicio-detalle-grid div:first-child {
+    width: 100px;
+    height: 70px;
+    overflow: hidden;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ajuste de la foto para que llene el recuadro sin deformarse */
+.ejercicio-detalle-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Mantiene la proporción y centra la imagen */
+    object-position: center;
+    display: block;
+}
+
+/* Recuadro cuando el ejercicio no tiene imagen */
+.ejercicio-detalle-grid .placeholder-img {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #edf2f7;
+    color: #a0aec0;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+/* Botones de ordenamiento */
+.btn-orden {
+    background: #f1f2f6;
+    border: 1px solid #ced6e0;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    transition: background 0.2s;
+}
+
+.btn-orden:hover:not(:disabled) {
+    background: #dfe4ea;
+}

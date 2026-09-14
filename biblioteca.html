@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Ejercicios - Pilates</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container-banco {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .banco-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card-ejercicio-banco {
+            background: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Estilos para la zona Drag & Drop de imagen */
+        .drop-zona-imagen {
+            position: relative;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 4px;
+            text-align: center;
+            cursor: pointer;
+            background: #fafafa;
+            transition: background-color 0.2s, border-color 0.2s;
+            margin-bottom: 10px;
+        }
+        .drop-zona-imagen:hover {
+            border-color: #6c5ce7;
+            background-color: #f8f5fc;
+        }
+        .drop-zona-imagen img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 6px;
+            display: block;
+        }
+        .drop-indicador {
+            display: block;
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="no-imprimir">
+        <h1>Banco de Ejercicios</h1>
+    </header>
+
+    <main class="container-banco">
+        <!-- BARRA SUPERIOR DE NAVEGACIÓN Y FILTROS -->
+        <div class="panel no-imprimir">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                <a href="index.html" class="btn-primary" style="text-decoration: none; padding: 8px 16px; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; background: #6c5ce7;">
+                    <span>⬅️</span> Volver a la Planificación
+                </a>
+                
+                <a href="creador.html" class="btn-primary" style="text-decoration: none; padding: 8px 16px; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px;">
+                    <span>⚙️</span> Creador de Ejercicios
+                </a>
+            </div>
+
+            <!-- FILTROS Y BÚSQUEDA -->
+            <div class="filters" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label for="inputBuscar"><strong>Buscar:</strong></label>
+                    <input type="text" id="inputBuscar" placeholder="Nombre del ejercicio..." onkeyup="filtrarBanco()" style="width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+
+                <div>
+                    <label for="filterAparato"><strong>Aparato:</strong></label>
+                    <select id="filterAparato" onchange="filtrarBanco()" style="padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="todos">Todos los Aparatos</option>
+                        <option value="Reformer">Reformer</option>
+                        <option value="Mat">Mat</option>
+                        <option value="Chair">Wunda Chair</option>
+                        <option value="Cadillac">Cadillac</option>
+                        <option value="Barrel">Barrel</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="filterNivel"><strong>Nivel:</strong></label>
+                    <select id="filterNivel" onchange="filtrarBanco()" style="padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="todos">Todos los Niveles</option>
+                        <option value="Inicial">Inicial</option>
+                        <option value="Intermedio">Intermedio</option>
+                        <option value="Avanzado">Avanzado</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="filterBloque"><strong>Bloque:</strong></label>
+                    <select id="filterBloque" onchange="filtrarBanco()" style="padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="todos">Todos los Bloques</option>
+                        <option value="Footwork">Footwork</option>
+                        <option value="Miembro Inferior">Miembro Inferior</option>
+                        <option value="Tronco">Tronco</option>
+                        <option value="Miembro Superior">Miembro Superior</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- REJILLA DONDE SE CARGAN LOS EJERCICIOS -->
+        <div id="bancoGrid" class="banco-grid">
+            <p style="grid-column: 1/-1; text-align: center; color: #666;">Cargando ejercicios...</p>
+        </div>
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Credenciales de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAkY1CkU1hdzkrtMUyGhZA91enCaC_mlkg",
+            authDomain: "planificador-de-clases-pi.firebaseapp.com",
+            databaseURL: "https://planificador-de-clases-pi-default-rtdb.firebaseio.com",
+            projectId: "planificador-de-clases-pi",
+            storageBucket: "planificador-de-clases-pi.firebasestorage.app",
+            messagingSenderId: "997712158194",
+            appId: "1:997712158194:web:af9403ddb6db63806b1f6b",
+            measurementId: "G-QYJND0993V"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+
+    <!-- Lógica JavaScript de la biblioteca -->
+    <script src="biblioteca.js"></script>
+</body>
+</html>
