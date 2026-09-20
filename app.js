@@ -2,6 +2,18 @@
 // CONFIGURACIÓN Y ESTADO GLOBAL
 // ==========================================
 const coleccionEjercicios = db.collection('ejercicios');
+coleccionEjercicios.get()
+    .then((snapshot) => {
+        console.log("🧪 LECTURA DIRECTA FIRESTORE");
+        console.log("Cantidad:", snapshot.size);
+
+        snapshot.forEach((doc) => {
+            console.log("📄 Documento:", doc.id, doc.data());
+        });
+    })
+    .catch((error) => {
+        console.error("❌ ERROR EN LECTURA DIRECTA:", error);
+    });
 const IMGBB_API_KEY = "1f537445826db544cbc96c9b55abe381";
 
 let bibliotecaEjercicios = [];
@@ -21,28 +33,27 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==========================================
 // 1. CARGA DE BIBLIOTECA (VINCULACIÓN INDEX)
 // ==========================================
-
-// Intenta leer en tiempo real, pero si tarda, realiza una lectura directa
 function cargarBibliotecaDirecta() {
-    coleccionEjercicios.get().then((snapshot) => {
-        if (snapshot.empty) {
-            console.log("Biblioteca vacía en la nube. Cargando semilla inicial...");
-            cargarSemillaInicial();
-        } else {
-            bibliotecaEjercicios = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            cargarEjerciciosBiblioteca(bibliotecaEjercicios);
-        }
-    }).catch((error) => {
-        console.error("Error al conectar con Firestore:", error);
-    });
-
-    // Escucha en tiempo real de respaldo
     coleccionEjercicios.onSnapshot((snapshot) => {
-        if (!snapshot.empty) {
-            bibliotecaEjercicios = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            cargarEjerciciosBiblioteca(bibliotecaEjercicios);
-        }
-    }, (error) => console.warn("Aviso en tiempo real:", error));
+
+        console.log("🔥 FIRESTORE LLEGÓ AL PLANIFICADOR");
+        console.log("📚 Cantidad de ejercicios:", snapshot.docs.length);
+
+        bibliotecaEjercicios = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        console.log("📦 bibliotecaEjercicios:", bibliotecaEjercicios);
+
+        cargarEjerciciosBiblioteca(bibliotecaEjercicios);
+
+    }, (error) => {
+        console.error("Error al sincronizar con Firestore:", error);
+
+        // No modificamos bibliotecaEjercicios si la conexión falla.
+        // Conservamos los datos que ya estaban cargados.
+    });
 }
 
 function cargarEjerciciosBiblioteca(ejercicios) {
@@ -301,27 +312,6 @@ function limpiarPlanificacion() {
     }
 }
 
-// CARGA INICIAL DE DATOS BASE
-async function cargarSemillaInicial() {
-    const ejerciciosBase = [
-        { nombre: "Footwork", aparato: "Reformer", nivel: "Inicial", resortes: "2 Rojos, 1 Azul", descripcion: "Alineación de pies y piernas.", transicion: "Mantener carro cerrado", imagen: "", variaciones: [] },
-        { nombre: "The Hundred", aparato: "Mat", nivel: "Inicial", resortes: "-", descripcion: "Bombeo de brazos y activación del centro.", transicion: "Rodar hacia arriba", imagen: "", variaciones: [] },
-        { nombre: "Short Spine", aparato: "Reformer", nivel: "Intermedio", resortes: "2 Rojos", descripcion: "Articulación de columna.", transicion: "Quitar correas", imagen: "", variaciones: [] }
-    ];
-
-    try {
-        const batch = db.batch();
-        ejerciciosBase.forEach(ej => {
-            const docRef = coleccionEjercicios.doc();
-            batch.set(docRef, ej);
-        });
-        await batch.commit();
-        cargarBibliotecaDirecta();
-    } catch (e) {
-        console.error("Error al cargar semilla:", e);
-    }
-}
-
 // MODAL DE VARIANTES
 function abrirModalVariantes(idEjercicio) {
     const ej = bibliotecaEjercicios.find(e => String(e.id) === String(idEjercicio));
@@ -413,3 +403,4 @@ window.moverEjercicio = function(nombreBloque, indexActual, direccion, event) {
     // 5. Guardar en localStorage y actualizar la pantalla inmediatamente
     guardarYActualizar();
 };
+console.log("🔎 APP.JS ESTÁ CARGADO");

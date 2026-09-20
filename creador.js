@@ -102,42 +102,6 @@ document.getElementById("formEjercicio").addEventListener("submit", function (e)
     }
 });
 
-// Renderizar la lista de ejercicios personalizados en tiempo real desde Firebase
-function escucharEjerciciosCreados() {
-    const contenedor = document.getElementById("listaPersonalizados");
-    if (!contenedor) return;
-
-    coleccionEjercicios.orderBy("creadoEn", "desc").onSnapshot((snapshot) => {
-        contenedor.innerHTML = "";
-
-        if (snapshot.empty) {
-            contenedor.innerHTML = "<p style='color: #888; font-style: italic; font-size: 0.9rem;'>Aún no has creado ningún ejercicio personalizado.</p>";
-            return;
-        }
-
-        snapshot.forEach((doc) => {
-            const ex = doc.data();
-            const docId = doc.id;
-
-            const div = document.createElement("div");
-            div.className = "bloque-item";
-            div.style.alignItems = "flex-start";
-            div.innerHTML = `
-                <div style="flex: 1;">
-                    <span class="badge">${ex.aparato || ''} • ${ex.nivel || ''}</span>
-                    <strong>${ex.nombre || 'Sin nombre'}</strong><br>
-                    <small style="color: #666;">Carga: ${ex.resortes || 'N/A'} | Bloque: ${ex.bloqueSugerido || 'N/A'}</small><br>
-                    <p style="font-size: 0.8rem; color: #444; margin: 4px 0 0 0;"><em>${ex.descripcion || ''}</em></p>
-                </div>
-                <button class="delete-btn" onclick="eliminarEjercicio('${docId}')" title="Eliminar ejercicio">×</button>
-            `;
-            contenedor.appendChild(div);
-        });
-    }, (error) => {
-        console.error("Error al cargar lista de ejercicios:", error);
-    });
-}
-
 // Eliminar ejercicio de Firebase por su ID
 async function eliminarEjercicio(docId) {
     if (confirm("¿Estás seguro de que deseas eliminar este ejercicio de Firebase?")) {
@@ -151,7 +115,6 @@ async function eliminarEjercicio(docId) {
 }
 
 // Iniciar la escucha en tiempo real
-escucharEjerciciosCreados();
 document.getElementById('btnAgregarVariante').addEventListener('click', () => {
     const contenedor = document.getElementById('contenedor-variantes');
     const index = contenedor.children.length + 1;
@@ -172,23 +135,6 @@ document.getElementById('btnAgregarVariante').addEventListener('click', () => {
     `;
 
     contenedor.appendChild(div);
-});
-// Obtener variantes
-const bloquesVariantes = document.querySelectorAll('.bloque-variante');
-const variaciones = [];
-
-bloquesVariantes.forEach(bloque => {
-    const nombreVar = bloque.querySelector('.var-nombre').value.trim();
-    const accionVar = bloque.querySelector('.var-accion').value.trim();
-    const resortesVar = bloque.querySelector('.var-resortes').value.trim();
-
-    if (nombreVar) {
-        variaciones.push({
-            nombreVariacion: nombreVar,
-            accion: accionVar,
-            resortes: resortesVar
-        });
-    }
 });
 
 // Función para celular
